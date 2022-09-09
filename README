@@ -1,0 +1,32 @@
+How to run:
+
+1) First open the terminal and type 'make' command 
+2) 'user1' and 'user2' executable files are created.
+3) On this terminal enter command './user1'. open another terminal in the same directory and type
+   command './user2'.Breceiver and sender is open now.oth  In the first terminal, enter the message
+   mentioned in the 'documentation.txt' and you can see the details related to sending in user1 
+   terminal and the characters received in user2. Here we kept the drop_probabiliy as 0.15 . So 
+   the message received in the user2 terminal can have repetitive character from the user1 message
+   and can be out of order.
+4) user1 terminal is closed after all the characters of the message is sent ad all acknowledgements 
+   are recieved. user2 terminal is kept open. To run the user1 again typr command './user1'
+   and type the string again. Similarly, user2 terminal can be closed and run again using './user2'.
+5) You can vary the value of 'p' from the 'rsocket.h' file from 0.05 to 0.50 .
+
+The file:
+
+1. rsocket.c - This file contains the code for the library for MRP socket. It has the various api 
+   function calls like r_socket, r_send, r_recvfrom, r_bind, r_close etc along with the auxillary 
+   functions that are needed for the implementation. All the related data structures specified 
+   earlier are declared in this file as global variables. Mutual exclusion is implemented here 
+   using pthread_mutex locks. 
+2. rsocket.h - this include file contains prototypes for the functions specified in rsocket.c .
+   It also contains the typedefs for the datastructure nodes mentioned before. 
+3. user1.c - This is a sample code for a sender. It creates a socket, binds it to port 50082, 
+   reads a string from user and sends each character in a message to user2.c and then closes its 
+   socket.
+4. user2.c - This is  sample code for a receiver. It creates a socket and binds it to port 50083. 
+   It is in an infinite loop calling r_recvfrom and receiving characters sent by user2. The 
+   received messages are then printed on the terminal.
+5. Makefile - Contains the list commands for making a static library from rsocket.c, compiling 
+   the user1.c and user2.c files along with the library.

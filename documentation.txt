@@ -1,0 +1,81 @@
+Group 48
+Sayantan Saha(19CS30041)
+Kamalesh Garnayak(19CS10074)
+
+# String/Message used for testing: "abcdefghijklmnopqrstuvwxyzSayantanSaha19CS30041"
+# Size of the string: 47 (characters)
+
+# Transmission Summary:
+We have gone for same drop probability with the same string two times and taken the average of 
+those two for calculating average transmission.
+
+--------------------------------------------------------------------------------------------------
+| Drop Probability | Transmissions | Average Transmissions | Average Transmissions Per Character |
+--------------------------------------------------------------------------------------------------
+|      0.05        |   53, 51      |          52           |             1.106                   |
+|      0.10        |   55, 53      |          54           |             1.149                   |
+|      0.15        |   63, 63      |          63           |             1.340                   |
+|      0.20        |   72, 83      |          77.5         |             1.649                   |
+|      0.25        |   74, 87      |          80.5         |             1.712                   |
+|      0.30        |   99, 86      |          92.5         |             1.968                   |
+|      0.35        |   137, 107    |          122          |             2.596                   |
+|      0.40        |   145, 158    |          151.5        |             3.223                   |
+|      0.45        |   153, 186    |          169.5        |             3.606                   |
+|      0.50        |   207, 182    |          194.5        |             4.138                   |
+--------------------------------------------------------------------------------------------------
+
+# Data Structures:
+
+* received_messgae_table: The recived message table is taken as an array of struct objects 
+of type recv_msg:
+    typedef struct {
+        char msg[210];
+        struct sockaddr_in src_addr;
+        int msg_len;
+    }recv_msg;
+    Here the 'msg' character array in the structure holds the message with the required headers 
+    included. The 'src_addr' is the adddres of the source address from which the message was
+    sent. 'msg_len' is the length of the 'msg' string in this structure.
+
+* unacknowledged_message_table: The unacknowledged message table is taken as an array of 
+struct objects of type 'unack_msg':
+    typedef struct {
+        int id;
+        char msg[210];
+        int msg_len;
+        struct sockaddr_in dest_addr;
+        time_t time;
+    }unack_msg; 
+    Here the 'msg' character array in the structure holds the message with the required headers 
+    included . Here 'id' is the sequence number of the message using which we can determine 
+    which message's acknowledgement is received and vice-verca. 'msg_len' is the length of 
+    the 'msg' string in this structure. The 'dest_addr' is the adddres of the destination 
+    address to which the message is sent. 'time' is needed for considerning the time when the 
+    unacknowledgement messgae was sent.
+
+ 
+# Functions and their functionalities in 'rsocket.c':
+* r_socket: Function to initialise the socket similar to 'socket' call
+
+* r_bind: Function to bind the socket to the port - similar to 'bind' call
+
+* r_sendto: Function to send messages similar to 'sendto' call
+
+* r_recvfrom: Function to read data from the receive buffer similar to 'recvfrom' call
+
+* r_close: Function to close the socket and free the memory similar to 'close' call
+
+* thread_R: It is the thread to receive message
+
+* thread_S: It is the thread to wait for the timeout and retransmit the messages whose 
+acknowledgement is not received till waiting time.
+
+* dropMessage: It determines whether the message received in thread R will be dropped or not.
+
+* Receive: This function is used in thread R, if the message is a normal message(not an
+acknowledgement message) then the message is received, ten acknowledgement will be sent. If 
+the message is of acknowledgement type, then it is removed from the unacknowledged_message_table.
+
+
+
+
